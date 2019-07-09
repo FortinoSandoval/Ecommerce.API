@@ -1,10 +1,10 @@
 # Ecommerce.API
 
 *Add this to `main/resources/application.properties` and change password and username* 
-```spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
-spring.datasource.url=jdbc:sqlserver://localhost;databaseName=ecommerce
+```spring.datasource.url=jdbc:sqlserver://localhost;databaseName=ecommerce
 spring.datasource.username=USERNAME
 spring.datasource.password=PASSWORD
+spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql = true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.SQLServer2012Dialect
