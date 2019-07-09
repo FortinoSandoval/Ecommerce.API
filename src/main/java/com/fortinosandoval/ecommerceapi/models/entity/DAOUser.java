@@ -5,23 +5,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class DAOUser {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @Column
   private String username;
+  @Column
   @JsonIgnore
   private String password;
 
-  public DAOUser() {
-  }
-
-  public DAOUser(String username, String password) {
-    this.username = username;
-    this.password = password;
-  }
-
-  @Column(name = "username", nullable = false)
   public String getUsername() {
     return username;
   }
@@ -30,7 +25,6 @@ public class DAOUser {
     this.username = username;
   }
 
-  @Column(name = "password", nullable = false)
   public String getPassword() {
     return password;
   }
@@ -39,13 +33,4 @@ public class DAOUser {
     this.password = password;
   }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
 }

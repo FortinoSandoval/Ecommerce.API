@@ -1,7 +1,7 @@
 # Ecommerce.API
 
 *Add this to `main/resources/application.properties` and change password and username* 
-```ring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+```spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring.datasource.url=jdbc:sqlserver://localhost;databaseName=ecommerce
 spring.datasource.username=USERNAME
 spring.datasource.password=PASSWORD
