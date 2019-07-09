@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fortinosandoval.ecommerceapi.dao.UserDao;
+import com.fortinosandoval.ecommerceapi.repository.UserRepository;
 import com.fortinosandoval.ecommerceapi.models.entity.DAOUser;
 import com.fortinosandoval.ecommerceapi.models.UserDTO;
 
@@ -18,14 +18,14 @@ import com.fortinosandoval.ecommerceapi.models.UserDTO;
 public class JwtUserDetailsService implements UserDetailsService {
 
   @Autowired
-  private UserDao userDao;
+  private UserRepository userRepository;
 
   @Autowired
   private PasswordEncoder bcryptEncoder;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    DAOUser user = userDao.findByUsername(username);
+    DAOUser user = userRepository.findByUsername(username);
     if (user == null) {
       throw new UsernameNotFoundException("User not found with username: " + username);
     }
@@ -37,6 +37,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     DAOUser newUser = new DAOUser();
     newUser.setUsername(user.getUsername());
     newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-    return userDao.save(newUser);
+    return userRepository.save(newUser);
   }
 }

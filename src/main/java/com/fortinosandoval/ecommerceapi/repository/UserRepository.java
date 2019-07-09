@@ -1,4 +1,4 @@
-package com.fortinosandoval.ecommerceapi.dao;
+package com.fortinosandoval.ecommerceapi.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.fortinosandoval.ecommerceapi.models.entity.DAOUser;
 
 @Repository
-public interface UserDao extends CrudRepository<DAOUser, Integer> {
+public interface UserRepository extends CrudRepository<DAOUser, Integer> {
 
   DAOUser findByUsername(String username);
 
