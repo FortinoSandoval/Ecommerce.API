@@ -1,4 +1,4 @@
-package com.fortinosandoval.ecommerceapi.controllers;
+package com.fortinosandoval.ecommerceapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
