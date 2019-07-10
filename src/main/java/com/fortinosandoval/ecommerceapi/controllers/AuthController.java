@@ -1,6 +1,8 @@
 package com.fortinosandoval.ecommerceapi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +23,7 @@ import com.fortinosandoval.ecommerceapi.models.UserDTO;
 
 @RestController
 @CrossOrigin
-public class JwtAuthenticationController {
+public class AuthController {
 
   @Autowired
   private AuthenticationManager authenticationManager;
@@ -32,7 +34,7 @@ public class JwtAuthenticationController {
   @Autowired
   private JwtUserDetailsService userDetailsService;
 
-  @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+  @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
     authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
@@ -44,8 +46,12 @@ public class JwtAuthenticationController {
     return ResponseEntity.ok(new JwtResponse(token));
   }
 
-  @RequestMapping(value = "/register", method = RequestMethod.POST)
+  @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
   public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
+    if (userDetailsService.alreadyExist(user.getUsername())) {
+      HttpHeaders responseHeaders = new HttpHeaders();
+      return new ResponseEntity<>("Duplicated Username", responseHeaders, HttpStatus.BAD_REQUEST);
+    }
     return ResponseEntity.ok(userDetailsService.save(user));
   }
 

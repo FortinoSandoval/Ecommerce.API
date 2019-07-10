@@ -32,7 +32,15 @@ public class JwtUserDetailsService implements UserDetailsService {
         new ArrayList<>());
   }
 
-  public DAOUser save(UserDTO user) {
+  public Boolean alreadyExist(String username) {
+    DAOUser userExists = userRepository.findByUsername(username);
+    if (userExists != null) {
+      return true;
+    }
+    return false;
+  }
+
+  public DAOUser save(UserDTO user) throws Exception {
     DAOUser newUser = new DAOUser();
     newUser.setUsername(user.getUsername());
     newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
