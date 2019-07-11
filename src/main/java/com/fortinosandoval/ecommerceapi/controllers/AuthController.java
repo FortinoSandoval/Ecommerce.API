@@ -37,14 +37,23 @@ public class AuthController {
 
   @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+  HttpHeaders responseHeaders = new HttpHeaders();
 
-    authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    try {
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+    } catch (DisabledException e) {
+      RequestResponse requestResponse = new RequestResponse("User are disabled", "DISABLED", HttpStatus.UNAUTHORIZED.value());
+      return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.UNAUTHORIZED);
+    } catch (BadCredentialsException e) {
+      RequestResponse requestResponse = new RequestResponse("Invalid username/password", "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED.value());
+      return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.UNAUTHORIZED);
+    }
 
     final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
     final String token = jwtTokenUtil.generateToken(userDetails);
 
-    return ResponseEntity.ok(new JwtResponse(token));
+    return ResponseEntity.ok(new JwtResponse(token, authenticationRequest.getUsername()));
   }
 
   @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
@@ -55,15 +64,5 @@ public class AuthController {
       return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.BAD_REQUEST);
     }
     return ResponseEntity.ok(userDetailsService.save(user));
-  }
-
-  private void authenticate(String username, String password) throws Exception {
-    try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-    } catch (DisabledException e) {
-      throw new Exception("USER_DISABLED", e);
-    } catch (BadCredentialsException e) {
-      throw new Exception("INVALID_CREDENTIALS", e);
-    }
   }
 }
