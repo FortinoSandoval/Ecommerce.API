@@ -20,7 +20,7 @@ import com.fortinosandoval.ecommerceapi.config.JwtTokenUtil;
 import com.fortinosandoval.ecommerceapi.models.JwtRequest;
 import com.fortinosandoval.ecommerceapi.models.JwtResponse;
 import com.fortinosandoval.ecommerceapi.models.UserDTO;
-import com.fortinosandoval.ecommerceapi.models.BadRequestError;
+import com.fortinosandoval.ecommerceapi.models.RequestResponse;;
 
 @RestController
 @CrossOrigin
@@ -51,8 +51,8 @@ public class AuthController {
   public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
     if (userDetailsService.alreadyExist(user.getUsername())) {
       HttpHeaders responseHeaders = new HttpHeaders();
-      BadRequestError badRequestError = new BadRequestError("Duplicated username", "DUPLICATE_USERNAME", HttpStatus.BAD_REQUEST.value());
-      return new ResponseEntity<>(badRequestError, responseHeaders, HttpStatus.BAD_REQUEST);
+      RequestResponse requestResponse = new RequestResponse("Duplicated username", "DUPLICATE_USERNAME", HttpStatus.BAD_REQUEST.value());
+      return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.BAD_REQUEST);
     }
     return ResponseEntity.ok(userDetailsService.save(user));
   }

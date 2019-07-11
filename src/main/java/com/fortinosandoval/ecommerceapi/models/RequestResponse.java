@@ -3,12 +3,12 @@ package com.fortinosandoval.ecommerceapi.models;
 /**
  * BadRequestError
  */
-public class BadRequestError {
+public class RequestResponse {
   public String message;
   public String code;
   public int statusCode;
 
-  public BadRequestError(String message, String code, int statusCode) {
+  public RequestResponse(String message, String code, int statusCode) {
     super();
     this.message = message;
     this.code = code;
