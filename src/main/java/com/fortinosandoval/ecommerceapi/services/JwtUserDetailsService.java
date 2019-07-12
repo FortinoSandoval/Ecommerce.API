@@ -32,6 +32,15 @@ public class JwtUserDetailsService implements UserDetailsService {
         new ArrayList<>());
   }
 
+  public String getUserRole(String username) throws UsernameNotFoundException {
+    DAOUser user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new UsernameNotFoundException("User not found with username: " + username);
+    }
+    String role = user.getRole();
+    return role;
+  }
+
   public Boolean alreadyExist(String username) {
     DAOUser userExists = userRepository.findByUsername(username);
     if (userExists != null) {

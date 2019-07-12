@@ -37,15 +37,18 @@ public class AuthController {
 
   @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-  HttpHeaders responseHeaders = new HttpHeaders();
+    HttpHeaders responseHeaders = new HttpHeaders();
 
     try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+          authenticationRequest.getPassword()));
     } catch (DisabledException e) {
-      RequestResponse requestResponse = new RequestResponse("User are disabled", "DISABLED", HttpStatus.UNAUTHORIZED.value());
+      RequestResponse requestResponse = new RequestResponse("User are disabled", "DISABLED",
+          HttpStatus.UNAUTHORIZED.value());
       return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.UNAUTHORIZED);
     } catch (BadCredentialsException e) {
-      RequestResponse requestResponse = new RequestResponse("Invalid username/password", "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED.value());
+      RequestResponse requestResponse = new RequestResponse("Invalid username/password", "INVALID_CREDENTIALS",
+          HttpStatus.UNAUTHORIZED.value());
       return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.UNAUTHORIZED);
     }
 
@@ -53,16 +56,20 @@ public class AuthController {
 
     final String token = jwtTokenUtil.generateToken(userDetails);
 
-    return ResponseEntity.ok(new JwtResponse(token, authenticationRequest.getUsername()));
+    final String role = userDetailsService.getUserRole(authenticationRequest.getUsername());
+
+    return ResponseEntity.ok(new JwtResponse(token, authenticationRequest.getUsername(), role));
   }
 
   @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
   public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
     if (userDetailsService.alreadyExist(user.getUsername())) {
       HttpHeaders responseHeaders = new HttpHeaders();
-      RequestResponse requestResponse = new RequestResponse("Duplicated username", "DUPLICATE_USERNAME", HttpStatus.BAD_REQUEST.value());
+      RequestResponse requestResponse = new RequestResponse("Duplicated username", "DUPLICATE_USERNAME",
+          HttpStatus.BAD_REQUEST.value());
       return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.BAD_REQUEST);
     }
+    user.setRole("PERSON");
     return ResponseEntity.ok(userDetailsService.save(user));
   }
 }

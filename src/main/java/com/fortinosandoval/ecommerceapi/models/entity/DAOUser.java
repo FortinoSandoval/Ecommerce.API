@@ -16,6 +16,8 @@ public class DAOUser {
   @Column
   @JsonIgnore
   private String password;
+  @Column
+  private String role;
 
   public String getUsername() {
     return username;
@@ -31,6 +33,14 @@ public class DAOUser {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 
 }
