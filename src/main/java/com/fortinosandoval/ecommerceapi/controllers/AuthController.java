@@ -81,6 +81,6 @@ public class AuthController {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String role = userDetailsService.getUserRole(auth.getName());
 
-    return role == "ADMIN" ? true : false;
+    return role.equals("ADMIN") ? true : false;
   }
 }
