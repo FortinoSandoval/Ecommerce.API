@@ -8,11 +8,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fortinosandoval.ecommerceapi.services.JwtUserDetailsService;
 
@@ -71,5 +74,13 @@ public class AuthController {
     }
     user.setRole("PERSON");
     return ResponseEntity.ok(userDetailsService.save(user));
+  }
+
+  @RequestMapping(value = "/isadmin", method = RequestMethod.GET)
+  public boolean isAdmin() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    final String role = userDetailsService.getUserRole(auth.getName());
+
+    return role == "ADMIN" ? true : false;
   }
 }
