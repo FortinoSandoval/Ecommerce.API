@@ -55,4 +55,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
     return userRepository.save(newUser);
   }
+
+  public boolean isAdmin(String username) {
+    final String role = getUserRole(username);
+
+    if (role == null) {
+      return false;
+    }
+    return role.equals("ADMIN") ? true : false;
+  }
 }

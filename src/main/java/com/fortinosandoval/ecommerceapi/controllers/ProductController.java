@@ -3,6 +3,11 @@ package com.fortinosandoval.ecommerceapi.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +16,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import com.fortinosandoval.ecommerceapi.repository.ProductRepository;
+import com.fortinosandoval.ecommerceapi.services.JwtUserDetailsService;
+import com.fortinosandoval.ecommerceapi.models.RequestResponse;
 import com.fortinosandoval.ecommerceapi.models.entity.Product;
 
 @RestController
@@ -19,11 +26,23 @@ import com.fortinosandoval.ecommerceapi.models.entity.Product;
 public class ProductController {
 
   @Autowired
+  private JwtUserDetailsService userDetailsService;
+
+  @Autowired
   private ProductRepository productRepository;
 
   @ApiOperation(value = "View the product list", response = Iterable.class)
   @RequestMapping(value = "/products")
-  public List<Product> getAllProducts() {
-    return productRepository.findAll();
+  public ResponseEntity<?> getAllProducts() {
+    HttpHeaders responseHeaders = new HttpHeaders();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    boolean isAdmin = userDetailsService.isAdmin(auth.getName());
+    if (!isAdmin) {
+      RequestResponse requestResponse = new RequestResponse("You don't have permission", "PERMISSION_DENIED",
+          HttpStatus.BAD_REQUEST.value());
+      return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.BAD_REQUEST);
+    }
+    List<Product> products = productRepository.findAll();
+    return new ResponseEntity<>(products, responseHeaders, HttpStatus.OK);
   }
 }

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fortinosandoval.ecommerceapi.services.JwtUserDetailsService;
 
@@ -79,8 +78,8 @@ public class AuthController {
   @RequestMapping(value = "/isadmin", method = RequestMethod.GET)
   public boolean isAdmin() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    final String role = userDetailsService.getUserRole(auth.getName());
+    boolean isAdmin = userDetailsService.isAdmin(auth.getName());
 
-    return role.equals("ADMIN") ? true : false;
+    return isAdmin;
   }
 }
