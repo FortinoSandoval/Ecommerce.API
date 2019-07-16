@@ -3,7 +3,6 @@ package com.fortinosandoval.ecommerceapi.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,15 +33,14 @@ public class ProductController {
   @ApiOperation(value = "View the product list", response = Iterable.class)
   @RequestMapping(value = "/products")
   public ResponseEntity<?> getAllProducts() {
-    HttpHeaders responseHeaders = new HttpHeaders();
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     boolean isAdmin = userDetailsService.isAdmin(auth.getName());
     if (!isAdmin) {
       RequestResponse requestResponse = new RequestResponse("You don't have permission", "PERMISSION_DENIED",
           HttpStatus.BAD_REQUEST.value());
-      return new ResponseEntity<>(requestResponse, responseHeaders, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(requestResponse, HttpStatus.BAD_REQUEST);
     }
     List<Product> products = productRepository.findAll();
-    return new ResponseEntity<>(products, responseHeaders, HttpStatus.OK);
+    return new ResponseEntity<>(products, HttpStatus.OK);
   }
 }
