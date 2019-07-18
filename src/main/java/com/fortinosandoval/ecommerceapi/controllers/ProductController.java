@@ -58,7 +58,7 @@ public class ProductController {
     }
     productRepository.deleteById(id);
     RequestResponse requestResponse = new RequestResponse("Item " + id + " was deleted", "DELETED",
-          HttpStatus.BAD_REQUEST.value());
+          HttpStatus.OK.value());
     return new ResponseEntity<>(requestResponse, HttpStatus.OK);
   }
 }
