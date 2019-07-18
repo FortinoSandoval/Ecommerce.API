@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -42,5 +44,21 @@ public class ProductController {
     }
     List<Product> products = productRepository.findAll();
     return new ResponseEntity<>(products, HttpStatus.OK);
+  }
+
+  @ApiOperation(value = "Delete a product using its id")
+  @RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> deleteProductById(@PathVariable("id") Long id) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    boolean isAdmin = userDetailsService.isAdmin(auth.getName());
+    if (!isAdmin) {
+      RequestResponse requestResponse = new RequestResponse("You don't have permission", "PERMISSION_DENIED",
+          HttpStatus.BAD_REQUEST.value());
+      return new ResponseEntity<>(requestResponse, HttpStatus.BAD_REQUEST);
+    }
+    productRepository.deleteById(id);
+    RequestResponse requestResponse = new RequestResponse("Item " + id + " was deleted", "DELETED",
+          HttpStatus.BAD_REQUEST.value());
+    return new ResponseEntity<>(requestResponse, HttpStatus.OK);
   }
 }
